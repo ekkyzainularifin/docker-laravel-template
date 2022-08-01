@@ -1,0 +1,61 @@
+version: '3.3'
+
+services:
+  app:
+    build:
+      context: ./conf
+      dockerfile: nginx.dockerfile
+    container_name: app
+    tty: true
+    ports:
+      - "8000:80"
+      - "443:443"
+    volumes:
+      - ./src:/var/www/html:delegated
+    networks:
+      - app-network
+
+  php:
+    build:
+      context: ./conf
+      dockerfile: php.dockerfile
+    container_name: php
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=host.docker.internal
+      - DB_PORT=3307
+      - DB_DATABASE=app_one
+      - DB_USERNAME=root
+      - DB_PASSWORD=010203
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www
+    volumes:
+      - ./src:/var/www/html:delegated
+      - ./conf/php/config.ini:/usr/local/etc/php/conf.d/config.ini
+    networks:
+      - app-network
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    networks:
+      - app-network
+  
+  cron:
+    build:
+      context: ./conf
+      dockerfile: cron.dockerfile
+    container_name: cron
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
