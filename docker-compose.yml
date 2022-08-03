@@ -29,7 +29,7 @@ services:
       - DB_PASSWORD=010203
     restart: unless-stopped
     tty: true
-    working_dir: /var/www
+    working_dir: /var/www/html
     volumes:
       - ./src:/var/www/html:delegated
       - ./conf/php/config.ini:/usr/local/etc/php/conf.d/config.ini
