@@ -5,21 +5,21 @@ services:
     build:
       context: ./conf
       dockerfile: nginx.dockerfile
-    container_name: app
+    container_name: app_portofolio
     tty: true
     ports:
       - 8001:80
-      # - "443:443"
+      - 4431:443
     volumes:
       - ./src:/var/www/html:delegated
     networks:
-      - app-network
+      - laravel
 
   php:
     build:
       context: ./conf
       dockerfile: php.dockerfile
-    container_name: php
+    container_name: php_portofolio
     environment:
       - DB_CONNECTION=mysql
       - DB_HOST=host.docker.internal
@@ -34,28 +34,28 @@ services:
       - ./src:/var/www/html:delegated
       - ./conf/php/config.ini:/usr/local/etc/php/conf.d/config.ini
     networks:
-      - app-network
+      - laravel
 
   redis:
     image: redis:alpine
-    container_name: redis
+    container_name: redis_portofolio
     restart: unless-stopped
     ports:
       - 6379:6379
     networks:
-      - app-network
+      - laravel
   
   cron:
     build:
       context: ./conf
       dockerfile: cron.dockerfile
-    container_name: cron
+    container_name: cron_portofolio
     volumes:
       - ./src:/var/www/html
     networks:
-      - app-network
+      - laravel
 
 #Docker Networks
 networks:
-  app-network:
+  laravel:
     driver: bridge
