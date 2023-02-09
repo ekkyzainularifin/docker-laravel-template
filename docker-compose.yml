@@ -1,3 +1,4 @@
+
 version: '3.3'
 
 services:
@@ -5,7 +6,7 @@ services:
     build:
       context: ./conf
       dockerfile: nginx.dockerfile
-    container_name: app_portofolio
+    container_name: accounting_backend_dev_app
     tty: true
     ports:
       - 8001:80
@@ -14,19 +15,14 @@ services:
       - ./src:/var/www/html:delegated
     networks:
       - laravel
-
+ 
   php:
     build:
       context: ./conf
       dockerfile: php.dockerfile
-    container_name: php_portofolio
-    environment:
-      - DB_CONNECTION=mysql
-      - DB_HOST=host.docker.internal
-      - DB_PORT=3307
-      - DB_DATABASE=app_one
-      - DB_USERNAME=root
-      - DB_PASSWORD=010203
+    container_name: accounting_backend_dev_php
+    env_file:
+      - ./src/.env
     restart: unless-stopped
     tty: true
     working_dir: /var/www/html
@@ -35,26 +31,16 @@ services:
       - ./conf/php/config.ini:/usr/local/etc/php/conf.d/config.ini
     networks:
       - laravel
-
-  redis:
-    image: redis:alpine
-    container_name: redis_portofolio
-    restart: unless-stopped
-    ports:
-      - 6379:6379
-    networks:
-      - laravel
   
   cron:
     build:
       context: ./conf
       dockerfile: cron.dockerfile
-    container_name: cron_portofolio
+    container_name: accounting_backend_dev_cron
     volumes:
       - ./src:/var/www/html
     networks:
       - laravel
-
 #Docker Networks
 networks:
   laravel:
