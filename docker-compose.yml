@@ -1,26 +1,25 @@
-
 version: '3.3'
 
 services:
-  app:
+  web:
     build:
       context: ./conf
       dockerfile: nginx.dockerfile
-    container_name: accounting_backend_dev_app
+    container_name: pbm_banuanta_staging_web
     tty: true
     ports:
-      - 8001:80
-      - 4431:443
+      - 8005:80
     volumes:
       - ./src:/var/www/html:delegated
+      - ./data/nginx/log:/var/log/nginx
     networks:
-      - laravel
- 
+      - pbm_banuanta
+
   php:
     build:
       context: ./conf
       dockerfile: php.dockerfile
-    container_name: accounting_backend_dev_php
+    container_name: pbm_banuanta_staging_php
     env_file:
       - ./src/.env
     restart: unless-stopped
@@ -29,19 +28,21 @@ services:
     volumes:
       - ./src:/var/www/html:delegated
       - ./conf/php/config.ini:/usr/local/etc/php/conf.d/config.ini
+      - ./data/web/storage:/var/www/html/storage/app/public
+      - ./data/web/log:/var/www/html/storage/logs
     networks:
-      - laravel
-  
+      - pbm_banuanta
+
   cron:
     build:
       context: ./conf
       dockerfile: cron.dockerfile
-    container_name: accounting_backend_dev_cron
+    container_name: pbm_banuanta_staging_cron
     volumes:
       - ./src:/var/www/html
     networks:
-      - laravel
+      - pbm_banuanta
 #Docker Networks
 networks:
-  laravel:
+  pbm_banuanta:
     driver: bridge
