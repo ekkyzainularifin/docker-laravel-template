@@ -18,13 +18,12 @@ jobs:
         # Add your build and test commands here
         echo "No testing required"
 
-    - name: Auto merge pull request
-      uses: peter-evans/enable-pull-request-automerge@v3.0.0
+    - name: Merge pull request
+      uses: peter-evans/enable-pull-request-automerge@v3
       with:
-        github-token: ${{ secrets.TOKEN }}
+        token: ${{ secrets.TOKEN }}
+        pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
         merge-method: squash
-        delete-branch: true
-        commit-message: "Merged pull request #${{ github.event.pull_request.number }} from ${{ github.event.pull_request.head.ref }} into staging"
 
     - name: Comment on merged pull request
       uses: peter-evans/create-or-update-comment@v2
