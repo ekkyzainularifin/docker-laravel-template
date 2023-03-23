@@ -1,0 +1,35 @@
+name: Auto Merge Staging Branch
+
+on:
+  pull_request:
+    branches:
+      - staging
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build and test code
+      run: |
+        # Add your build and test commands here
+        echo "No testing required"
+
+    - name: Auto merge pull request
+      uses: peter-evans/pull-request-auto-merge@v2.5.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        merge-method: squash
+        delete-branch: true
+        commit-message: "Merged pull request #${{ github.event.pull_request.number }} from ${{ github.event.pull_request.head.ref }} into staging"
+
+    - name: Comment on merged pull request
+      uses: peter-evans/create-or-update-comment@v1.3.0
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          :tada: This pull request has been automatically merged into the `staging` branch.
+          :rocket: Thanks for your contribution!
