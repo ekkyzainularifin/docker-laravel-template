@@ -19,7 +19,7 @@ jobs:
         echo "No testing required"
 
     - name: Merge pull request
-      uses: peter-evans/pull-request-auto-merge@v3
+      uses: peter-evans/enable-pull-request-automerge@v3
       with:
         token: ${{ secrets.TOKEN }}
         pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
