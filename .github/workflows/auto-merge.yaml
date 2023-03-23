@@ -19,7 +19,7 @@ jobs:
         echo "No testing required"
 
     - name: Auto merge pull request
-      uses: peter-evans/pull-request-auto-merge@v2.5.1
+      uses: peter-evans/enable-pull-request-automerge@v3.0.0
       with:
         github-token: ${{ secrets.TOKEN }}
         merge-method: squash
