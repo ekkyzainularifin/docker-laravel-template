@@ -27,7 +27,7 @@ jobs:
         commit-message: "Merged pull request #${{ github.event.pull_request.number }} from ${{ github.event.pull_request.head.ref }} into staging"
 
     - name: Comment on merged pull request
-      uses: peter-evans/create-or-update-comment@v1.3.0
+      uses: peter-evans/create-or-update-comment@v2
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
