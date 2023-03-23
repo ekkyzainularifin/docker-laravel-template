@@ -21,10 +21,9 @@ jobs:
     - name: Merge pull request
       uses: peter-evans/pull-request-auto-merge@v3
       with:
-        github-token: ${{ secrets.TOKEN }}
+        token: ${{ secrets.TOKEN }}
+        pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
         merge-method: squash
-        delete-branch: true
-        commit-message: "Automatically merged pull request #${{ github.event.pull_request.number }} by ${github.event.pull_request.user.login}}"
 
     - name: Comment on merged pull request
       uses: peter-evans/create-or-update-comment@v2
