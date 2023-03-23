@@ -21,7 +21,7 @@ jobs:
     - name: Auto merge pull request
       uses: peter-evans/enable-pull-request-automerge@v3.0.0
       with:
-        github-token: ${{ secrets.TOKEN }}
+        token: ${{ secrets.TOKEN }}
         merge-method: squash
         delete-branch: true
         commit-message: "Merged pull request #${{ github.event.pull_request.number }} from ${{ github.event.pull_request.head.ref }} into staging"
