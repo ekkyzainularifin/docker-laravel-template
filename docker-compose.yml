@@ -1,61 +1,48 @@
 version: '3.3'
 
 services:
-  app:
+  web:
     build:
       context: ./conf
       dockerfile: nginx.dockerfile
-    container_name: app_portofolio
+    container_name: pbm_banuanta_staging_web
     tty: true
     ports:
-      - 8001:80
-      - 4431:443
+      - 8005:80
     volumes:
       - ./src:/var/www/html:delegated
+      - ./data/nginx/log:/var/log/nginx
     networks:
-      - laravel
+      - pbm_banuanta
 
   php:
     build:
       context: ./conf
       dockerfile: php.dockerfile
-    container_name: php_portofolio
-    environment:
-      - DB_CONNECTION=mysql
-      - DB_HOST=host.docker.internal
-      - DB_PORT=3307
-      - DB_DATABASE=app_one
-      - DB_USERNAME=root
-      - DB_PASSWORD=010203
+    container_name: pbm_banuanta_staging_php
+    env_file:
+      - ./src/.env
     restart: unless-stopped
     tty: true
     working_dir: /var/www/html
     volumes:
       - ./src:/var/www/html:delegated
       - ./conf/php/config.ini:/usr/local/etc/php/conf.d/config.ini
+      - ./data/web/storage:/var/www/html/storage/app/public
+      - ./data/web/log:/var/www/html/storage/logs
     networks:
-      - laravel
-
-  redis:
-    image: redis:alpine
-    container_name: redis_portofolio
-    restart: unless-stopped
-    ports:
-      - 6379:6379
-    networks:
-      - laravel
+      - pbm_banuanta
 
   cron:
     build:
       context: ./conf
       dockerfile: cron.dockerfile
-    container_name: cron_portofolio
+    container_name: pbm_banuanta_staging_cron
     volumes:
       - ./src:/var/www/html
     networks:
-      - laravel
-
+      - pbm_banuanta
 #Docker Networks
 networks:
-  laravel:
+  pbm_banuanta:
     driver: bridge
