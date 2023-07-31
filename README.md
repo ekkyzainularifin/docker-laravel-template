@@ -32,4 +32,7 @@ after run docker compose command you need to check container, and copy container
 ```bash
 docker exec -it CONTAINER_NAME composer install
 docker exec -it CONTAINER_NAME php artisan key:generate
+docker exec -it CONTAINER_NAME php artisan migrate
+docker exec -it CONTAINER_NAME php artisan optimize
+docker exec -it CONTAINER_NAME php artisan cache:clear
 ```

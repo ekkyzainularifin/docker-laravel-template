@@ -5,21 +5,21 @@ services:
     build:
       context: ./conf
       dockerfile: nginx.dockerfile
-    container_name: pbm_banuanta_staging_web
+    container_name: container_name_web
     tty: true
     ports:
-      - 8005:80
+      - 8000:80
     volumes:
       - ./src:/var/www/html:delegated
       - ./data/nginx/log:/var/log/nginx
     networks:
-      - pbm_banuanta
+      - network_name
 
   php:
     build:
       context: ./conf
       dockerfile: php.dockerfile
-    container_name: pbm_banuanta_staging_php
+    container_name: container_name_php
     env_file:
       - ./src/.env
     restart: unless-stopped
@@ -28,21 +28,18 @@ services:
     volumes:
       - ./src:/var/www/html:delegated
       - ./conf/php/config.ini:/usr/local/etc/php/conf.d/config.ini
-      - ./data/web/storage:/var/www/html/storage/app/public
-      - ./data/web/log:/var/www/html/storage/logs
     networks:
-      - pbm_banuanta
+      - network_name
 
   cron:
     build:
       context: ./conf
       dockerfile: cron.dockerfile
-    container_name: pbm_banuanta_staging_cron
+    container_name: container_name_cron
     volumes:
       - ./src:/var/www/html
     networks:
-      - pbm_banuanta
-#Docker Networks
+      - network_name
 networks:
-  pbm_banuanta:
-    driver: bridge
+  network_name:
+    external: true
