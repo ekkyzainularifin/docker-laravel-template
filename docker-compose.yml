@@ -6,6 +6,7 @@ services:
       context: ./conf
       dockerfile: nginx.dockerfile
     container_name: container_name_web
+    restart: unless-stopped
     tty: true
     ports:
       - 8000:80
@@ -20,9 +21,9 @@ services:
       context: ./conf
       dockerfile: php.dockerfile
     container_name: container_name_php
+    restart: unless-stopped
     env_file:
       - ./src/.env
-    restart: unless-stopped
     tty: true
     working_dir: /var/www/html
     volumes:
@@ -31,15 +32,6 @@ services:
     networks:
       - network_name
 
-  cron:
-    build:
-      context: ./conf
-      dockerfile: cron.dockerfile
-    container_name: container_name_cron
-    volumes:
-      - ./src:/var/www/html
-    networks:
-      - network_name
 networks:
   network_name:
     external: true
