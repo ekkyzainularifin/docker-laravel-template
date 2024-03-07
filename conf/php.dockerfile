@@ -6,10 +6,7 @@ WORKDIR /var/www/html
 
 RUN docker-php-ext-install pdo pdo_mysql
 RUN apk add --no-cache mysql-client msmtp perl wget procps shadow libzip libpng libjpeg-turbo libwebp freetype icu
-
-RUN apk add --update --no-cache libgd libpng-dev libjpeg-turbo-dev freetype-dev
-
-#RUN docker-php-ext-install -j$(nproc) gd
+RUN apk add --update --no-cache libgd libpng-dev libjpeg-turbo-dev freetype-dev supervisor
 
 RUN apk add --no-cache --virtual build-essentials \
     icu-dev icu-libs zlib-dev g++ make automake autoconf libzip-dev \
@@ -31,4 +28,8 @@ RUN if [ ${INSTALL_PHPREDIS} = true ]; then \
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
+# Copy Supervisor configuration file for Laravel queue worker
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Start Supervisor
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
